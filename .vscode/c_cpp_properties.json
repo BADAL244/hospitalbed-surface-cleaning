@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/sutd/catkin_ws/devel/include/**",
+                "/opt/ros/noetic/include/**",
+                "/home/sutd/catkin_ws/src/ar_track_alvar/ar_track_alvar/include/**",
+                "/home/sutd/catkin_ws/src/vision_opencv/cv_bridge/include/**",
+                "/home/sutd/catkin_ws/src/vision_opencv/image_geometry/include/**",
+                "/home/sutd/catkin_ws/src/objectrecognition/include/**",
+                "/home/sutd/catkin_ws/src/zed-ros-wrapper/zed-ros-interfaces/include/**",
+                "/usr/include/**",
+                "/usr/include/pcl-1.10"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
