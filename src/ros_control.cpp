@@ -61,10 +61,10 @@ void Controller::callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud_msg
         for(auto ele:new_set){
             if(ele.new_id.id == _id_one){
                 cout << ele.Pt.x  << "id"<< _id_one <<  "content" << endl;
-                x_min=  ele.Pt.x * config_.scale_x;
-                x_max = x_min + 1.6;
+                x_min=  0.0;
+                x_max = ele.Pt.x;
                 y_min = ele.Pt.y;
-                z_min = ele.Pt.z + config_.scale_z_min;
+                z_min = ele.Pt.z - 0.8 + config_.scale_z_min;
                 z_max = ele.Pt.z + config_.scale_z_max;
             }else if(ele.new_id.id == _id_two){
                 cout << ele.Pt.y << "id"<< _id_two <<  "content" << endl;
@@ -96,8 +96,8 @@ void Controller::callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud_msg
             pub1.publish(cropped_cloud_msg);
         }
     }
-    if(config_.enable){
-        cout << "yes bro" << endl;
+    if(config_.save_enable){
+        pcl::io::savePCDFileASCII ("/home/sutd/catkin_ws/src/objectrecognition/pcd/test.pcd", *cropped_cloud_ptr.get());
     }
 
     project_to_costmap(cropped_cloud_ptr);
@@ -291,7 +291,7 @@ bool Controller::project_to_costmap(boost::shared_ptr<pcl::PointCloud<PointT> > 
     int size_data = input_cloud_ptr->points.size();
 
 
-    std::vector<std::vector<float>> total_data(size_data);
+    std::vector<std::vector<double>> total_data(size_data);
     for (int i = 0 ; i < size_data ; i++) {
         total_data[i].resize(2, 0.0);
     }
@@ -323,42 +323,67 @@ bool Controller::project_to_costmap(boost::shared_ptr<pcl::PointCloud<PointT> > 
 
     size_t grid_size = grid.info.width * grid.info.height;
     grid.data = std::vector<int8_t>(grid_size, 0);
+    int index = 0;
+    if(config_.flip_enable){
+        for (int index_y = 0; index_y < grid.info.width; index_y++)
+        {
+            for (int index_x = 0; index_x < grid.info.height; index_x++)
+            {
+            //unsigned int i = index_x + (grid.info.height - index_y - 1) * grid.info.width;
+            double y = bb_min.y + index_x * grid.info.resolution;
+            double z = bb_min.z + index_y * grid.info.resolution;
 
-
-    for (int index_y = 0; index_y < grid.info.height; index_y++)
-    {
-      for (int index_x = 0; index_x < grid.info.width; index_x++)
-      {
-        unsigned int i = index_x + (grid.info.height - index_y - 1) * grid.info.width;
-        double y = bb_min.y + index_y * grid.info.resolution;
-        double z = bb_min.z + index_x * grid.info.resolution;
-
-        if(config_.map_enable){
+            if(config_.map_enable){
             nearby = tree->search({y,z}, config_.radius);
-        }else{
+            }else{
             nearby = tree->search({y,z}, _radius);
-        }
+            }
         
-        if (nearby.size() > _thereshold)
-          grid.data[i] = 0;
-        else
-          grid.data[i] = 100;
-      }
+            if (nearby.size() > _thereshold)
+                grid.data[index] = 0;
+            else
+                grid.data[index] = 100;
+
+            index++;
+            }
+        }
+    }else{
+        for (int index_y = 0; index_y < grid.info.height; index_y++)
+        {
+            for (int index_x = 0; index_x < grid.info.width; index_x++)
+            {
+                //unsigned int i = index_x + (grid.info.height - index_y - 1) * grid.info.width;
+                double y = bb_min.y + index_x * grid.info.resolution;
+                double z = bb_min.z + index_y * grid.info.resolution;
+
+            if(config_.map_enable){
+                nearby = tree->search({y,z}, config_.radius);
+            }else{
+                nearby = tree->search({y,z}, _radius);
+            }
+        
+            if (nearby.size() > _thereshold)
+                grid.data[index] = 0;
+            else
+                grid.data[index] = 100;
+
+            index++;
+            }
+        }
     }
+    grid_pub.publish(grid);
 
-grid_pub.publish(grid);
-
-return true;
+    return true;
 }
 
 
 template
 <typename PointT>
-std::vector<std::vector<float>> Controller::search_cloud(boost::shared_ptr<pcl::PointCloud<PointT> > input_cloud_ptr){
+std::vector<std::vector<double>> Controller::search_cloud(boost::shared_ptr<pcl::PointCloud<PointT> > input_cloud_ptr){
 
    
     int size_data = input_cloud_ptr->points.size();
-    std::vector<std::vector<float>> points(size_data);
+    std::vector<std::vector<double>> points(size_data);
     for (int i = 0 ; i < size_data ; i++) {
         points[i].resize(2, 0.0);
     }
@@ -395,9 +420,7 @@ double x_min, double x_max,double  y_min,double  y_max,double  z_min,double z_ma
 
 void Controller::drCallback(objectrecognition::TuningConfig& config,
         uint32_t level)
-{
+{       
         config_ = config;
-        std::cout << config_.scale_x << std::endl;
-        std::cout << config_.orientation_x_x << std::endl;
-        std::cout << _orientation_x << std::endl;
+        ROS_INFO("Reconfigure called");
 }

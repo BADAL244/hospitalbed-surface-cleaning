@@ -8,8 +8,8 @@
     <param name="radius" value= ".0065"/>
     <param name="thereshold" value= "1" />
     <param name="resolution" value= ".02" />
-    <param name="ID1" value="6"/>
-    <param name="ID2" value="3"/>
+    <param name="ID1" value="8"/>
+    <param name="ID2" value="5"/>
 
     <param name="orientation_x" value="0.707068" />
     <param name="orientation_y" value="0.0" />

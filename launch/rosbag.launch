@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+<arg name="bags_directory" value="/media/sutd/EFD3-6381/bagfile/"/>
+
+<node name="bag_record" pkg="rosbag" type="record"
+    args="record -o $(arg bags_directory)/bag /zed/zed_node/point_cloud/cloud_registered /tf /tf_static /zed/ar_pose_marker /zed/zed_node/left/image_rect_color"/>
+    
+</launch>

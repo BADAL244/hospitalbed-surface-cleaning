@@ -23,7 +23,7 @@ generate_dynamic_reconfigure_options(
 )
 
 
-find_package(OpenCV 4.2 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
@@ -58,6 +58,16 @@ add_executable(verticle_node src/ros_verticle.cpp
 add_dependencies(verticle_node objectrecognition_gencfg)
 
 target_link_libraries(verticle_node 
+      ${catkin_LIBRARIES}
+      ${PCL_LIBRARIES}
+)
+
+add_executable(horizontal_crop src/ros_crop.cpp 
+                        src/ros_crop_node.cpp
+)
+add_dependencies(horizontal_crop objectrecognition_gencfg)
+
+target_link_libraries(horizontal_crop 
       ${catkin_LIBRARIES}
       ${PCL_LIBRARIES}
 )

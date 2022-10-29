@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="map_pcd" default="$(find objectrecognition)/pcd/new_test.pcd" />
+
+  <node pkg="pcl_ros" type="pcd_to_pointcloud" name="pcd_to_pointcloud" args="$(arg map_pcd)" output="screen">
+    <remap from="cloud_pcd" to="mapcloud" />
+    <param name="frame_id" value="map" />
+    <param name="latch" value="true" />
+    <param name="interval" value="0.1" />
+  </node>
+
+
+</launch>

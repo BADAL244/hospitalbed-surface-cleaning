@@ -2,26 +2,18 @@
 <launch>
 
   <node name="objectrecognition" pkg="objectrecognition"
-      type="verticle_node"
+      type="horizontal_crop"
       output="screen" >
 
     <param name="radius" value= ".0065"/>
     <param name="thereshold" value= "1" />
     <param name="resolution" value= ".02" />
-    <param name="ID1" value="8"/>
-    <param name="ID2" value="5"/>
+
 
     <param name="orientation_x" value="0.707068" />
     <param name="orientation_y" value="0.0" />
     <param name="orientation_z" value="0.0" />
     <param name="orientation_w" value="-0.707068" />
-
-    <param name="xmin" value="0.0" />
-    <param name="xmax" value="1.2" />
-    <param name="ymin" value="-.3" />
-    <param name="ymax" value="0.3" />
-    <param name="zmin" value="0.0" />
-    <param name="zmax" value="0.5" />
 
 
   </node>
